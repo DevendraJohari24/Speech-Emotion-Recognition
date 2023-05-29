@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 import speechEmotion as s
 import os
 from flask import request
@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello():
-    return os.path.join(os.getcwd(), "temp")
+    return render_template('pages/index.html')
 
 @app.route("/detect", methods=["POST"])
 def detect():
