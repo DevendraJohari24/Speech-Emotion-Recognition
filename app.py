@@ -1,11 +1,10 @@
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, request
 import speechEmotion as s
 import os
-from flask import request
 
 app = Flask(__name__)
 
-@app.route("/")
+@app.route("/api")
 def hello():
     return render_template('pages/index.html')
 
