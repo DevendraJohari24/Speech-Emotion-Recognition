@@ -2,33 +2,13 @@
 
 from tensorflow import keras
 import os
-import sys
 import pandas as pd
 import numpy as np
 from pydub import AudioSegment, effects
 import librosa
+import random
 import noisereduce as nr
-from librosa import display   
-
-
-
-
-
-
-
-
 # -------------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
 
 def augumentatedAudio(rawsound, sr, max_len_audio=314818):
     normalizedsound = effects.normalize(rawsound, headroom = 5.0) 
@@ -69,11 +49,68 @@ def predictLSTM(rawsound, sr, model, frame_length=2048, hop_length=512):
     y_pred.replace({0:'happy', 1:'sad', 2:'angry', 3:'fear', 4:'disgust', 5:'neutral', 6:'surprise', 7:'calm'}, inplace=True)
     return y_pred[0]
 
+
+def getImageUrl(emotion):
+    emotionImageUrl = ''
+    happyImages = [
+        "https://img.freepik.com/free-photo/assortment-with-happy-emotion_23-2148860256.jpg",
+        "https://img.freepik.com/free-photo/volumetric-smiling-emoticon-blurred-background-generative-ai_169016-29775.jpg"
+    ]
+
+    sadImages = [
+        "https://img.freepik.com/free-photo/sad-balloon-with-copy-space-blue-monday_23-2148756213.jpg",
+        "https://img.freepik.com/free-photo/sad-cute-girl-sulking-feeling-regret-looking-upper-left-corner_1258-19090.jpg",
+    ]
+
+    angryImages = [
+        "https://img.freepik.com/free-photo/offended-angry-woman-cross-hands-chest-frowning-sulking-insulted-standing-beige-background_1258-87274.jpg"
+    ]
+
+    fearImages = [
+        "i0.wp.com/post.medicalnewstoday.com/wp-content/uploads/sites/3/2021/10/Dissecting_terror_GettyImages763291217_Header-1024x575.jpg",
+    ]
+
+    disgustImages = [
+                "https://img.freepik.com/free-photo/offended-angry-woman-cross-hands-chest-frowning-sulking-insulted-standing-beige-background_1258-87274.jpg"
+
+    ]
+
+    neutralImages = [
+        "https://img.freepik.com/free-photo/offended-angry-woman-cross-hands-chest-frowning-sulking-insulted-standing-beige-background_1258-87274.jpg"
+
+    ]
+
+    surpriseImages = [
+        "https://img.freepik.com/free-photo/offended-angry-woman-cross-hands-chest-frowning-sulking-insulted-standing-beige-background_1258-87274.jpg"
+
+    ]
+
+    calmImages = [
+        "https://img.freepik.com/free-photo/offended-angry-woman-cross-hands-chest-frowning-sulking-insulted-standing-beige-background_1258-87274.jpg"
+
+    ]
+    if emotion == 'happy':
+        emotionImageUrl = random.choice(happyImages)
+    elif emotion == 'sad':
+        emotionImageUrl = random.choice(sadImages)
+    elif emotion == 'angry':
+        emotionImageUrl = random.choice(angryImages)
+    elif emotion == 'fear':
+        emotionImageUrl = random.choice(fearImages)
+    elif emotion == 'disgust':
+        emotionImageUrl = random.choice(disgustImages)
+    elif emotion == 'neutral':
+        emotionImageUrl = random.choice(neutralImages)
+    elif emotion == 'surprise':
+        emotionImageUrl = random.choice(surpriseImages)
+    elif emotion == 'calm':
+        emotionImageUrl = random.choice(calmImages)
+    return emotionImageUrl
+
 def predictEmotion(path):
     rawsound = AudioSegment.from_file(path)
     x, sr = librosa.load(path, sr = None)
     model_path = os.path.join(os.getcwd(), "LSTM_SpeechRecognition")
     model = keras.models.load_model(model_path)
     emotion = predictLSTM(rawsound=rawsound, sr=sr, model=model)
-    print(emotion)
     return emotion
